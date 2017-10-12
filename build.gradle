@@ -1,0 +1,27 @@
+group "ccloomi.com"
+version '1.0'
+apply plugin: 'java'
+apply plugin: 'eclipse'
+allprojects {
+	repositories {
+		maven{url='http://localhost:8081/repository/alimaven-central/'}
+		maven{url="http://localhost:8081/repository/maven-releases/"}
+		mavenCentral()
+	}
+}
+dependencies {
+	def springVersion		= "4.3.11.RELEASE"
+	def springBootVersion	= "1.5.7.RELEASE"
+	
+    compile (
+    		["org.springframework.boot:spring-boot-starter-web:$springBootVersion"],
+    		["org.springframework.boot:spring-boot-starter-websocket:$springBootVersion"],
+    		["org.springframework.boot:spring-boot-starter-tomcat:$springBootVersion"],
+    		//["org.springframework.boot:spring-boot-starter:$springBootVersion"],
+    		["org.springframework.boot:spring-boot-autoconfigure:$springBootVersion"],
+    		//["org.springframework.boot:spring-boot:$springBootVersion"],
+    		["org.springframework:spring-websocket:$springVersion"],
+    		fileTree(dir: 'libs', include: '*.jar')
+    	     )
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}

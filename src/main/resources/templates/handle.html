@@ -1,0 +1,301 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>手柄-${handle}</title>
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <!-- home screen app 全屏 -->
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/bst.js"></script>
+    <script src="/js/ccsocket.js"></script>
+    <script src="/js/ccnes.js"></script>
+    <link rel="stylesheet" href="/css/handle.css">
+</head>
+
+<body>
+    <panel id="panel">
+        <panel-left d="">
+            <table>
+                <tbody>
+                <tr><td upLeft></td><td up></td><td upRight></td></tr>
+                <tr><td left></td><td mid></td><td right></td></tr>
+                <tr><td downLeft></td><td down></td><td downRight></td></tr>
+                </tbody>
+            </table>
+        </panel-left>
+        <panel-right>
+            <div>
+                <div select></div>
+                <div start></div>
+            </div>
+            <div>
+                <div a></div>
+                <div b></div>
+            </div>
+            <div ab></div>
+        </panel-right>
+    </panel>
+</body>
+
+</html>
+<script>
+(function() {
+    var Point = function(x, y) {
+        this.x = x;
+        this.y = y;
+    }
+    Point.prototype = {};
+    window.Point = Point;
+})();
+(function() {
+    var Wheel = function() {
+        var π = Math.PI;
+        this.pi1 = Math.tan(π / 8);
+        this.pi3 = Math.tan(π * 3 / 8);
+        this.up = 1;
+        this.down = 1 << 1;
+        this.right = 1 << 2;
+        this.left = 1 << 3;
+        this.upRight = this.up | this.right;
+        this.upLeft = this.up | this.left;
+        this.downRight = this.down | this.right;
+        this.downLeft = this.down | this.left;
+    }
+    Wheel.prototype = {
+        getDirection: function(pa, pb) {
+            var dy = pa.y - pb.y;
+            var dx = pb.x - pa.x;
+
+            if (dy == 0 && dx == 0) {
+                return;
+            } else if (dx == 0) {
+                if (dy > 0) {
+                    return this.up;
+                } else {
+                    return this.down
+                }
+            } else if (dy == 0) {
+                if (dx > 0) {
+                    return this.right
+                } else {
+                    return this.left
+                }
+            } else {
+                var rg = dy / dx;
+                if (dx > 0) {
+                    if (rg > 0) {
+                        if (rg < this.pi1) {
+                            return 1 << 2; //right
+                        } else if (rg < this.pi3) {
+                            return this.upRight;
+                        } else {
+                            return this.up
+                        }
+                    } else {
+                        if (rg > -this.pi1) {
+                            return this.right
+                        } else if (rg > -this.pi3) {
+                            return this.downRight;
+                        } else {
+                            return this.down
+                        }
+                    }
+                } else {
+                    if (rg > 0) {
+                        if (rg < this.pi1) {
+                            return 1 << 3; //left
+                        } else if (rg < this.pi3) {
+                            return this.downLeft;
+                        } else {
+                            return this.down
+                        }
+                    } else {
+                        if (rg > -this.pi1) {
+                            return this.left
+                        } else if (rg > -this.pi3) {
+                            return this.upLeft;
+                        } else {
+                            return this.up
+                        }
+                    }
+                }
+            }
+        }
+    };
+    window.Wheel = Wheel;
+})();
+</script>
+<script>
+var tuid = "${tuid}";
+var handle = ${handle};
+var wl = new Wheel();
+var cns = new CCNes({ tuid: tuid });
+
+function load() {
+
+    document.addEventListener('touchstart', touch, false);
+    //document.addEventListener('touchmove', touch, false);
+    document.addEventListener('touchend', touch, false);
+    
+    //{"up":1,"down":2,"right":4,"left":8,"upRight":5,"upLeft":9,"downRight":6,"downLeft":10}
+    var d;
+    
+    var KEY_A = 0;
+    var KEY_B = 1;
+    var KEY_SELECT = 2;
+    var KEY_START = 3;
+    var KEY_UP = 4;
+    var KEY_DOWN = 5;
+    var KEY_LEFT = 6;
+    var KEY_RIGHT = 7;
+
+    function touch(event) {
+        var event = event || window.event;
+        event.preventDefault();
+        var target = $(event.target);
+        switch (event.type) {
+            case "touchstart":
+                if (target.is('[a]')) {
+                    cns.control(KEY_A, 0x41, handle);
+                } else if (target.is('[b]')) {
+                    cns.control(KEY_B, 0x41, handle);
+                } else if (target.is('[ab]')) {
+                    cns.control(KEY_A, 0x41, handle);
+                    cns.control(KEY_B, 0x41, handle);
+                } else if (target.is('[select]')) {
+                    cns.control(KEY_SELECT, 0x41, handle);
+                } else if (target.is('[start]')) {
+                    cns.control(KEY_START, 0x41, handle);
+                } else if (target.is("[up]")) {
+                	d=2;
+                    cns.control(KEY_UP, 0x41, handle);
+                } else if (target.is("[down]")) {
+                	d=1;
+                    cns.control(KEY_DOWN, 0x41, handle);
+                } else if (target.is("[left]")) {
+                	d=8;
+                    cns.control(KEY_LEFT, 0x41, handle);
+                } else if (target.is("[right]")) {
+                	d=4;
+                    cns.control(KEY_RIGHT, 0x41, handle);
+                } else if (target.is("[upLeft]")) {
+                	d=10;
+                    cns.control(KEY_UP, 0x41, handle);
+                    cns.control(KEY_LEFT, 0x41, handle);
+                } else if (target.is("[upRight]")) {
+                	d=6;
+                    cns.control(KEY_UP, 0x41, handle);
+                    cns.control(KEY_RIGHT, 0x41, handle);
+                } else if (target.is("[downLeft]")) {
+                	d=9;
+                    cns.control(KEY_DOWN, 0x41, handle);
+                    cns.control(KEY_LEFT, 0x41, handle);
+                } else if (target.is("[downRight]")) {
+                	d=5;
+                    cns.control(KEY_DOWN, 0x41, handle);
+                    cns.control(KEY_RIGHT, 0x41, handle);
+                } else if (target.is("[mid]")) {
+                	switch(d){
+                	case 1:
+                        cns.control(KEY_UP, 0x41, handle);
+                		break;
+                	case 2:
+                        cns.control(KEY_DOWN, 0x41, handle);
+                		break;
+                	case 4:
+                        cns.control(KEY_LEFT, 0x41, handle);
+                		break;
+                	case 8:
+                        cns.control(KEY_RIGHT, 0x41, handle);
+                		break;
+                	case 5:
+                        cns.control(KEY_UP, 0x41, handle);
+                        cns.control(KEY_LEFT, 0x41, handle);
+                		break;
+                	case 9:
+                        cns.control(KEY_UP, 0x41, handle);
+                        cns.control(KEY_RIGHT, 0x41, handle);
+                		break;
+                	case 6:
+                        cns.control(KEY_DOWN, 0x41, handle);
+                        cns.control(KEY_LEFT, 0x41, handle);
+                		break;
+                	case 10:
+                        cns.control(KEY_DOWN, 0x41, handle);
+                        cns.control(KEY_RIGHT, 0x41, handle);
+                		break;
+                	}
+                }
+                break;
+/*             case "touchmove":
+                break; */
+            case "touchend":
+                if (target.is('[a]')) {
+                    cns.control(KEY_A, 0x40, handle);
+                } else if (target.is('[b]')) {
+                    cns.control(KEY_B, 0x40, handle);
+                } else if (target.is('[ab]')) {
+                    cns.control(KEY_A, 0x40, handle);
+                    cns.control(KEY_B, 0x40, handle);
+                } else if (target.is('[select]')) {
+                    cns.control(KEY_SELECT, 0x40, handle);
+                } else if (target.is('[start]')) {
+                    cns.control(KEY_START, 0x40, handle);
+                } else if (target.is("[up]")) {
+                    cns.control(KEY_UP, 0x40, handle);
+                } else if (target.is("[down]")) {
+                    cns.control(KEY_DOWN, 0x40, handle);
+                } else if (target.is("[left]")) {
+                    cns.control(KEY_LEFT, 0x40, handle);
+                } else if (target.is("[right]")) {
+                    cns.control(KEY_RIGHT, 0x40, handle);
+                } else if (target.is("[upLeft]")) {
+                    cns.control(KEY_UP, 0x40, handle);
+                    cns.control(KEY_LEFT, 0x40, handle);
+                } else if (target.is("[upRight]")) {
+                    cns.control(KEY_UP, 0x40, handle);
+                    cns.control(KEY_RIGHT, 0x40, handle);
+                } else if (target.is("[downLeft]")) {
+                    cns.control(KEY_DOWN, 0x40, handle);
+                    cns.control(KEY_LEFT, 0x40, handle);
+                } else if (target.is("[downRight]")) {
+                    cns.control(KEY_DOWN, 0x40, handle);
+                    cns.control(KEY_RIGHT, 0x40, handle);
+                } else if (target.is("[mid]")) {
+                	switch(d){
+                	case 1:
+                        cns.control(KEY_UP, 0x40, handle);
+                		break;
+                	case 2:
+                        cns.control(KEY_DOWN, 0x40, handle);
+                		break;
+                	case 4:
+                        cns.control(KEY_LEFT, 0x40, handle);
+                		break;
+                	case 8:
+                        cns.control(KEY_RIGHT, 0x40, handle);
+                		break;
+                	case 5:
+                        cns.control(KEY_UP, 0x40, handle);
+                        cns.control(KEY_LEFT, 0x40, handle);
+                		break;
+                	case 9:
+                        cns.control(KEY_UP, 0x40, handle);
+                        cns.control(KEY_RIGHT, 0x40, handle);
+                		break;
+                	case 6:
+                        cns.control(KEY_DOWN, 0x40, handle);
+                        cns.control(KEY_LEFT, 0x40, handle);
+                		break;
+                	case 10:
+                        cns.control(KEY_DOWN, 0x40, handle);
+                        cns.control(KEY_RIGHT, 0x40, handle);
+                		break;
+                	}
+                }
+                break;
+        }
+    }
+}
+window.addEventListener('load', load, false);
+</script>

@@ -1,0 +1,130 @@
+body {
+    background-position: center center;
+    bottom: 0;
+    display: flex;
+    flex: 1 0 auto;
+    flex-direction: column;
+    image-rendering: -moz-crisp-edges;
+    left: 0;
+    margin: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+h1 {
+	color: slategray;
+}
+
+#emulator {
+	display: flex;
+	flex: 1 0 auto;
+	flex-direction: column;
+}
+
+#emulator>div::before {
+	background-color: whitesmoke;
+	bottom: 0;
+	content: "";
+	display: block;
+	left: 0;
+	opacity: 0.75;
+	position: absolute;
+	right: 0;
+	top: 0;
+	z-index: -1;
+}
+
+#emulator>div {
+	align-content: center;
+	align-items: center;
+	border: 1px solid white;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+	display: flex;
+	flex-direction: column;
+	position: relative;
+}
+
+#emulator>div * {
+	z-index: 2;
+}
+.nes-screen {
+	/*width: 100%;*/
+	height: 100%;
+}
+.nes-controls {
+	display: flex;
+	flex-direction: column;
+	position: absolute;
+	right: 0;
+	top: 0;
+}
+
+.nes-status {
+	bottom: 0;
+	color: slategrey;
+	left: 0;
+	margin: 0;
+	padding: 5px;
+	position: absolute;
+}
+
+[handle]::before {
+	background-color: slategrey;
+	bottom: 0;
+	content: "";
+	left: 0;
+	opacity: 0.85;
+	position: fixed;
+	right: 0;
+	top: 0;
+}
+
+[handle] {
+	bottom: 0;
+	display: none;
+	left: 0;
+	position: fixed;
+	right: 0;
+	text-align: center;
+	top: 0;
+}
+
+[handle] canvas {
+	border: 1px solid white;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+	position: relative;
+	top: 20%;
+}
+
+[a], [start] {
+	background-color: seagreen;
+}
+
+panel * {
+	display: flex;
+	flex: 1 0 auto;
+}
+
+* {
+	-moz-user-select: none;
+}
+
+[console] {
+	display: flex;
+	flex: 1 0 auto;
+	overflow: auto;
+}
+
+[console] pre {
+	background-color: slategray;
+	bottom: 0;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+	color: whitesmoke;
+	display: flex;
+	flex: 1 0 auto;
+	margin: 0;
+	opacity: 0.75;
+	overflow: auto;
+	padding: 16px;
+}

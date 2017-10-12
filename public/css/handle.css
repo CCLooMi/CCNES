@@ -1,0 +1,47 @@
+* {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+panel {
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+panel * {
+    display: flex;
+    flex: 1 0 auto;
+}
+panel-left tbody {
+    display: flex;
+    flex-direction: column;
+}
+td[upLeft], td[upRight], td[downLeft], td[downRight], td[mid] {
+    background-color: snow;
+}
+panel-right {
+    flex-direction: column;
+}
+panel-right>* {
+    flex-direction: row;
+}
+[d] {
+    background-color: slategrey;
+}
+[b],[select] {
+    background-color: yellowgreen;
+}
+[ab] {
+    background-color: tan;
+    height: auto;
+}
+[a],[start] {
+    background-color: teal;
+}

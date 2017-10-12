@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>CCNES</title>
+    <script src="/js/bst.js"></script>
+    <script src="/js/ccsocket.js"></script>
+    <script src="/js/ccnes.js"></script>
+
+    <script src="/js/jquery.min.js"></script>
+    <script src="/js/jquery.qrcode.min.js"></script>
+    <script src="/js/screenfull.min.js"></script>
+    
+    <script src="/js/audio/dynamicaudio-min.js"></script>
+    <script src="/js/jsnes/nes.js"></script>
+    <script src="/js/jsnes/utils.js"></script>
+    <script src="/js/jsnes/cpu.js"></script>
+    <script src="/js/jsnes/keyboard.js"></script>
+    <script src="/js/jsnes/mappers.js"></script>
+    <script src="/js/jsnes/papu.js"></script>
+    <script src="/js/jsnes/ppu.js"></script>
+    <script src="/js/jsnes/rom.js"></script>
+    <script src="/js/jsnes/ui.js"></script>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+    <h1>CC-NES</h1>
+    <div id="emulator"></div>
+    <script>
+        var nes;
+        $(function() {
+            nes = new JSNES({'ui': $('#emulator').JSNESUI()});
+        });
+    </script>
+    <!--[if IE]>
+        <script type="text/vbscript" src="source/jsnes-ie-hacks.vbscript"></script>
+    <![endif]-->
+</body>
+</html>
