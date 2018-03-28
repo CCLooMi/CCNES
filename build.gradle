@@ -11,7 +11,7 @@ allprojects {
 }
 dependencies {
 	def springVersion		= "4.3.11.RELEASE"
-	def springBootVersion	= "1.5.7.RELEASE"
+	def springBootVersion	= "2.0.0.RELEASE"
 	
     compile (
     		["org.springframework.boot:spring-boot-starter-web:$springBootVersion"],
