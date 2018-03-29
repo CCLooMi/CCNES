@@ -62,7 +62,8 @@ if (typeof jQuery !== 'undefined') {
                     handle1: $('<input type="button" value="handle1" class="nes-handle1">').appendTo(self.controls),
                     handle2: $('<input type="button" value="handle2" class="nes-handle2">').appendTo(self.controls),
                     logs: $('<input type="button" value="logs" class="nes-logs">').appendTo(self.controls),
-                    roms: $('<input type="button" value="roms" class="nes-roms">').appendTo(self.controls)
+                    roms: $('<input type="button" value="roms" class="nes-roms">').appendTo(self.controls),
+                    romSelect:$('<select></select>').appendTo(self.controls)
                 };
                 self.status = $('<p class="nes-status">Booting up...</p>').appendTo(self.root);
                 self.handle1=$('<div handle></div>').appendTo(self.root);
@@ -70,7 +71,10 @@ if (typeof jQuery !== 'undefined') {
                 self.root.appendTo(parent);
                 self.console=$('<code console><pre></pre></code>').appendTo(parent);
 
-                self.logEnable=true;
+                self.logEnable=false;
+                if(!self.logEnable){
+                    self.console.fadeToggle(250);
+                }
                 self.log=function(msg) {
                     if(self.logEnable){
                         if (logs_max++ == 50) {
@@ -84,7 +88,7 @@ if (typeof jQuery !== 'undefined') {
                     }
                 };
                 self.nes = nes;
-                self.ccnes=new CCNes({url:"ws://localhost:8080/ccnes",onmessage:function(o){
+                self.ccnes=new CCNes({url:"ws://"+window.location.host+"/ccnes",onmessage:function(o){
                     switch (o.handle){
                         case 1:
                             switch(o.t){
@@ -105,7 +109,13 @@ if (typeof jQuery !== 'undefined') {
                     }
                 },log:self.log});
                 self.keymap = self.nes.keyboard.keymap;
-
+                $.ajax({
+                	url:"//"+window.location.host+"/roms.json",
+                	success:function(roms){
+                		self.setRoms(roms);
+                	},
+                	dataType:'json'
+                });
                 /*
                  * Buttons
                  */
@@ -170,6 +180,9 @@ if (typeof jQuery !== 'undefined') {
                 });
                 self.buttons.screenshot.click(function (e) {
                     self.screenshot(document.body);
+                });
+                self.buttons.romSelect.change(function(){
+                	self.loadROM();
                 });
                 var onResize=false;
                 var consoleHeight=self.console.height();
@@ -273,8 +286,9 @@ if (typeof jQuery !== 'undefined') {
                 loadROM: function () {
                     var self = this;
                     self.updateStatus("Downloading...");
+                    var selectVal=self.buttons.romSelect.val();
                     $.ajax({
-                        url: escape(self.romSelect.val()),
+                        url: selectVal,
                         xhr: function () {
                             var xhr = $.ajaxSettings.xhr();
                             if (typeof xhr.overrideMimeType !== 'undefined') {
@@ -285,21 +299,25 @@ if (typeof jQuery !== 'undefined') {
                             return xhr;
                         },
                         complete: function (xhr, status) {
-                            var i, data;
-                            if (JSNES.Utils.isIE()) {
-                                var charCodes = JSNESBinaryToArray(
-                                    xhr.responseBody
-                                ).toArray();
-                                data = String.fromCharCode.apply(
-                                    undefined,
-                                    charCodes
-                                );
-                            } else {
-                                data = xhr.responseText;
+                            if('error'!=status){
+                            	var i, data;
+                                if (JSNES.Utils.isIE()) {
+                                    var charCodes = JSNESBinaryToArray(
+                                        xhr.responseBody
+                                    ).toArray();
+                                    data = String.fromCharCode.apply(
+                                        undefined,
+                                        charCodes
+                                    );
+                                } else {
+                                    data = xhr.responseText;
+                                }
+                                self.nes.loadRom(data);
+                                self.nes.start();
+                                self.enable();
+                            }else{
+                                self.updateStatus("Download ["+selectVal+"] "+status);
                             }
-                            self.nes.loadRom(data);
-                            self.nes.start();
-                            self.enable();
                         }
                     });
                 },
@@ -347,20 +365,25 @@ if (typeof jQuery !== 'undefined') {
                 },
 
                 setRoms: function (roms) {
-                    this.romSelect.children().remove();
-                    $("<option>Select a ROM...</option>").appendTo(this.romSelect);
-                    for (var groupName in roms) {
-                        if (roms.hasOwnProperty(groupName)) {
-                            var optgroup = $('<optgroup></optgroup>').
-                                attr("label", groupName);
-                            for (var i = 0; i < roms[groupName].length; i++) {
-                                $('<option>' + roms[groupName][i][0] + '</option>')
-                                    .attr("value", roms[groupName][i][1])
-                                    .appendTo(optgroup);
-                            }
-                            this.romSelect.append(optgroup);
-                        }
+                    this.buttons.romSelect.children().remove();
+                    $("<option>Select a ROM...</option>").appendTo(this.buttons.romSelect);
+                    for(var i in roms){
+                    	$('<option>'+roms[i]+'</option>')
+                    	.attr('value','//'+window.location.host+'/nes/'+roms[i])
+                    	.appendTo(this.buttons.romSelect);
                     }
+//                    for (var groupName in roms) {
+//                        if (roms.hasOwnProperty(groupName)) {
+//                            var optgroup = $('<optgroup></optgroup>').
+//                                attr("label", groupName);
+//                            for (var i = 0; i < roms[groupName].length; i++) {
+//                                $('<option>' + roms[groupName][i][0] + '</option>')
+//                                    .attr("value", roms[groupName][i][1])
+//                                    .appendTo(optgroup);
+//                            }
+//                            this.buttons.romSelect.append(optgroup);
+//                        }
+//                    }
                 },
 
                 writeAudio: function (samples) {
