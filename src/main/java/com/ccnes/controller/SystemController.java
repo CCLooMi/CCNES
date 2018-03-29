@@ -7,11 +7,11 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 public class SystemController {
-	@RequestMapping("/index")
+	@RequestMapping("/index.xhtml")
 	public ModelAndView index(){
 		return new ModelAndView("index");
 	}
-	@RequestMapping("/handle/{handle}/{tuid}")
+	@RequestMapping("/handle/{handle}/{tuid}.xhtml")
 	public ModelAndView handle(
 			@PathVariable String tuid,
 			@PathVariable int handle){

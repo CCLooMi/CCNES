@@ -44,8 +44,8 @@ public class MVCConfigurer {
 	}
 
 	@Bean
-	public ServletRegistrationBean apiServlet() {
-	    ServletRegistrationBean bean = new ServletRegistrationBean(dispatcherServlet);
+	public ServletRegistrationBean<DispatcherServlet> apiServlet() {
+	    ServletRegistrationBean<DispatcherServlet> bean = new ServletRegistrationBean<DispatcherServlet>(dispatcherServlet);
 	    bean.addUrlMappings("*.xhtml","*.json","*.do");
 	    return bean;
 	}
