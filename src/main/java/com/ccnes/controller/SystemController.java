@@ -1,13 +1,14 @@
 package com.ccnes.controller;
 
 import java.io.File;
-import java.nio.file.Paths;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
+
+import com.ccnes.util.Paths;
 
 @Controller
 public class SystemController {
@@ -29,7 +30,7 @@ public class SystemController {
 	@RequestMapping("/roms.json")
 	@ResponseBody
 	public String[] nesRoms(){
-		File dir=Paths.get(userdir, "public/nes").toFile();
+		File dir=Paths.getFile(userdir, "public/nes");
 		return dir.list((f,name)->{
 			return name.endsWith(".nes");
 		});

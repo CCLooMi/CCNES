@@ -3,14 +3,9 @@
     var CCDataView = function (buff, options) {
         var that = this;
         if (buff instanceof Array) {
-            this.buff = new ArrayBuffer(buff.length);
-            //只能通过视图对buff进行修改
-            var bv = new Uint8Array(this.buff);
-            for (var i = 0; i < buff.length; i++) {
-                bv[i] = buff[i];
-            }
+            this.buff = new Uint8Array(buff);
         } else if (buff instanceof ArrayBuffer) {
-            this.buff = buff;
+            this.buff = new Uint8Array(buff);
         }
         this.options = options;
         this.pos = 0;
@@ -86,17 +81,14 @@
             return index;
         },
         getIntArray: function (l, d) {
-            var a = [];
+            var a;
             if (!d) { //正序
                 if (l instanceof Array) {
                     l = this.arrayMatch(l);
                 } else if (l == undefined || typeof l != 'number') {
                     l = this.lim - this.pos;
                 }
-                //for(var i=0;i<l;i++){
-                //  a.push(this.buff[this.pos++]);
-                //}
-                a = new Uint8Array(this.buff, this.pos, l);
+                a = new Uint8Array(this.buff.buffer, this.pos, l);
                 this.pos += l;
             } else { //逆序
                 if (l instanceof Array) {
@@ -104,10 +96,7 @@
                 } else if (l == undefined || typeof l != 'number') {
                     l = this.lim - this.pos;
                 }
-                //for(var i=this.lim-l;i<this.lim;i++){
-                //  a.push(this.buff[i]);
-                //}
-                a = new Uint8Array(this.buff, this.lim - l, l);
+                a = new Uint8Array(this.buff.buffer, this.lim - l, l);
                 this.lim -= l;
             }
             return a;
