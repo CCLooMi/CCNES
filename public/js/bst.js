@@ -1108,7 +1108,7 @@
         }
         var rs = [];
         if (l > (s.length >> 1)) {
-            if (!d) { //BigEnding
+            if (d) { //BigEnding
                 for (var i = (s.length >> 1) - 1; i > -1; i--) {
                     rs.push(parseInt(s[i << 1] + s[(i << 1) + 1], 16));
                 }
@@ -1124,7 +1124,7 @@
                 }
             }
         } else if (l > 0) {
-            if (!d) { //BigEnd
+            if (d) { //BigEnd
                 for (var i = l - 1; i > -1; i--) {
                     rs.push(parseInt(s[i << 1] + s[(i << 1) + 1], 16));
                 }
@@ -1134,7 +1134,7 @@
                 }
             }
         } else {
-            if (!d) {
+            if (d) {
                 for (var i = s.length - 1; i > -1; i--) {
                     rs.push(parseInt(s[i - 1] + s[i--], 16));
                 }
@@ -1148,7 +1148,7 @@
     }
 
     function intArrayToInteger(a, d) {
-        if (!d) {
+        if (d) {
             a = a.reverse();
         }
         var sn = '';
