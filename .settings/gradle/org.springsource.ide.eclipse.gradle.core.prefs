@@ -1,6 +1,6 @@
 #org.springsource.ide.eclipse.gradle.core.preferences.GradleProjectPreferences
-#Wed Sep 27 08:20:59 CST 2017
-build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;
+#Sat Feb 15 12:16:08 CST 2020
+build.family.org.gradle.tooling.model.eclipse.HierarchicalEclipseProject=;../ccte;
 org.springsource.ide.eclipse.gradle.classname.enableSorting=false
 org.springsource.ide.eclipse.gradle.classpath.enableSorting=true
 org.springsource.ide.eclipse.gradle.linkedresources=
