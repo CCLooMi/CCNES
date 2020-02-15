@@ -1,1 +1,2 @@
 rootProject.name = 'CCNES'
+includeFlat "ccte"
